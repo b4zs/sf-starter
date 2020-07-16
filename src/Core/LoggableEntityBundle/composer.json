@@ -1,0 +1,12 @@
+{
+  "name": "sonata/loggable-entity-bundle",
+  "type": "symfony-bundle",
+  "description": "LoggableEntity bundle",
+  "keywords": ["gedmo", "log", "entity"],
+  "autoload": {
+    "psr-4": { "Core\\LoggableEntityBundle\\": "" }
+  },
+  "require": {
+    "gedmo/doctrine-extensions": "^2.4"
+  }
+}

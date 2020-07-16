@@ -1,0 +1,25 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Application\UserBundle\:
+        resource: '../../*'
+        exclude: '../../{DependencyInjection,Entity,Exception,Tests/Integration,Migrations,Model}'
+        public: true
+
+    Application\UserBundle\Admin\Extension\UserAdminSecurityRulesAdminExtension:
+        class: Application\UserBundle\Admin\Extension\UserAdminSecurityRulesAdminExtension
+        autowire: true
+        tags:
+            - { name: 'sonata.admin.extension', target: sonata.user.admin.user }
+
+    Application\UserBundle\Security\UsernamePasswordRecaptchaFormAuthenticationListener:
+        class: Application\UserBundle\Security\UsernamePasswordRecaptchaFormAuthenticationListener
+        abstract: true
+        parent: 'security.authentication.listener.form'
+        autowire: false
+        autoconfigure: false
+        public: false
+        calls:
+            - [setReCaptcha, ['@ReCaptcha\ReCaptcha']]

@@ -1,0 +1,8 @@
+Application\UserBundle\Entity\Group:
+    type: entity
+    table: user__group
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO

@@ -1,0 +1,112 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% extends 'SonataAdminBundle:CRUD:base_edit.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        button.btn.btn-sm.btn-default.pixlr-link {
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block sonata_admin_content %}
+
+    {% if object.id %}
+        {% block sonata_media_show_reference %}
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">{{ 'title.media_preview'|trans({}, 'SonataMediaBundle') }}</h3>
+                    {% if sonata_media.pixlr and sonata_media.pixlr.isEditable(object) %}
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-sm btn-default pixlr-link"
+                                    data-href="{{ path('sonata_media_pixlr_open_editor', { 'id': object|sonata_urlsafeid }) }}"
+                                    data-toggle="modal"
+                                    data-target="#pixlr-modal"
+                            >
+                                <i class="fa fa-pencil-square-o"></i> {{ "label.edit_with_pixlr"|trans({}, "SonataMediaBundle") }}
+                            </button>
+                        </div>
+                    {% endif %}
+
+                </div>
+                <div class="box-body table-responsive">
+
+                    <center> <!-- yeah, center is still awesome ;) -->
+                        {% media object, 'reference' with {'width': null, 'height': null, 'class': 'img-responsive img-rounded'} %}
+                    </center>
+
+                    <table class="table">
+                        <tr>
+                            <th>{{ 'label.size'|trans({}, 'SonataMediaBundle') }}</th>
+                            <td>
+                                {% if object.width and object.height %}{{ object.width|round }} * {{ object.height|round }}px, {% endif %}
+                                {% if object.size > 0 %}{{ (object.size/1024/1024)|number_format(1) }}MB{% endif %}
+                            </td>
+                        <tr>
+                        <tr>
+                            <th>{{ 'label.content_type'|trans({}, 'SonataMediaBundle') }}</th>
+                            <td>{{ object.contenttype }}</td>
+                        <tr>
+                        <tr>
+                            <th>{{ 'label.cdn'|trans({}, 'SonataMediaBundle') }}</th>
+                            <td>
+                                {% if object.cdnisflushable %}
+                                    {{ 'label.to_be_flushed'|trans({}, 'SonataMediaBundle') }}
+                                {% else %}
+                                    {{ 'label.flushed_at'|trans({}, 'SonataMediaBundle') }}
+                                    {{ object.cdnflushat|date }}
+                                {% endif %}
+                            </td>
+                        <tr>
+                        <tr>
+                            <th>
+                                <a href="{{ path('sonata_media_download', {'id': object|sonata_urlsafeid }) }}">{{ 'label.protected_download_url'|trans({}, 'SonataMediaBundle') }}</a>
+                            </th>
+                            <td>
+                                <input type="text" class="form-control" onClick="this.select();" readonly="readonly"
+                                       value="{{ path('sonata_media_download', {'id': object|sonata_urlsafeid }) }}"/>
+                                <span class="label label-warning">{{ 'label.protected_download_url_notice'|trans({}, 'SonataMediaBundle') }}</span> {{ sonata_media.pool.downloadSecurity(object).description|raw }}
+                            </td>
+                        <tr>
+                        <tr>
+                            <th>
+                                <a href="{% path object, 'reference' %}"
+                                   target="_blank">{{ 'label.reference'|trans({}, 'SonataMediaBundle') }}</a>
+                            </th>
+                            <td>
+                                <input type="text" class="form-control" onClick="this.select();" readonly="readonly"
+                                       value="{% path object, 'reference' %}"/>
+                            </td>
+                        </tr>
+
+                        {% for name, format in sonata_media.pool.formatNamesByContext(object.context) %}
+                            <tr>
+                                <th>
+                                    <a href="{% path object, name %}"
+                                       target="_blank">{{ name|trans({}, 'SonataMediaBundle') }}</a>
+                                </th>
+                                <td>
+                                    <input type="text" class="form-control" onClick="this.select();" readonly="readonly"
+                                           value="{% path object, name %}"/>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+            </div>
+        {% endblock sonata_media_show_reference %}
+    {% endif %}
+    {{ parent() }}
+{% endblock sonata_admin_content %}

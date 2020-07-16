@@ -1,0 +1,12 @@
+{
+  "name": "sonata/classification-bundle",
+  "type": "library",
+  "description": "Former classification bundle",
+  "keywords": ["category", "tag"],
+  "autoload": {
+    "psr-4": { "Core\\ClassificationBundle\\": "" }
+  },
+  "require": {
+    "sonata-project/classification-bundle": "~3.1"
+  }
+}

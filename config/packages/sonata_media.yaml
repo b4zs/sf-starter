@@ -1,0 +1,118 @@
+parameters:
+    sonata.media.provider.file.class: Application\MediaBundle\Provider\FileProvider
+
+sonata_media:
+    class:
+        media: Application\MediaBundle\Entity\Media
+        gallery: Application\MediaBundle\Entity\Gallery
+        gallery_has_media: Application\MediaBundle\Entity\GalleryHasMedia
+        category:   Core\ClassificationBundle\Entity\Category
+
+    db_driver: doctrine_orm
+    default_context: default
+    contexts:
+        default:
+            download:
+                mode: http # X-Sendfile | http
+                strategy: sonata.media.security.public_strategy
+            providers:
+                - sonata.media.provider.youtube
+                - sonata.media.provider.image
+                - sonata.media.provider.file
+
+            formats:
+                thumbnail:  { width: 150, height: 150, quality: 100 }
+                small:      { width: 513, height: 342, quality: 90 }
+                large:      { width: 1024, height: 768, quality: 90 }
+        private:
+            download:
+                mode: http # X-Sendfile | http
+                strategy: sonata.media.security.superadmin_strategy
+            providers:
+                - sonata.media.provider.image
+                - sonata.media.provider.file
+
+            formats:
+                thumbnail:  { width: 150, height: 150, quality: 100 }
+                small:      { width: 513, height: 342, quality: 90 }
+                large:      { width: 1024, height: 768, quality: 90 }
+    cdn:
+        server:
+            path: /upload/media
+
+    filesystem:
+        local:
+            # Directory for uploads should be writable
+            directory: "%kernel.project_dir%/public/upload/media"
+            create: false
+    providers:
+        image:
+            resizer: 'sonata.media.resizer.cropping'
+        file:
+            resizer:    false
+            allowed_extensions:
+                - pdf
+                - txt
+                - rtf
+                - doc
+                - docx
+                - xls
+                - xlsx
+                - ppt
+                - pptx
+                - odt
+                - odg
+                - odp
+                - ods
+                - odc
+                - odf
+                - odb
+                - csv
+                - xml
+                - mp4
+                - zip
+                - tiff
+                - jpeg
+                - jpg
+                - gif
+                - png
+                - webp
+                - dotx
+
+            allowed_mime_types:
+                - application/pdf
+                - application/x-pdf
+                - application/rtf
+                - text/html
+                - text/rtf
+                - text/plain
+                - application/excel
+                - application/msword
+                - application/vnd.ms-excel
+                - application/vnd.ms-powerpoint
+                - application/vnd.ms-powerpoint
+                - application/vnd.oasis.opendocument.text
+                - application/vnd.oasis.opendocument.graphics
+                - application/vnd.oasis.opendocument.presentation
+                - application/vnd.oasis.opendocument.spreadsheet
+                - application/vnd.oasis.opendocument.chart
+                - application/vnd.oasis.opendocument.formula
+                - application/vnd.oasis.opendocument.database
+                - application/vnd.oasis.opendocument.image
+                - text/comma-separated-values
+                - text/xml
+                - application/xml
+                - application/zip
+                - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                - application/vnd.openxmlformats-officedocument.wordprocessingml.template
+                - application/vnd.openxmlformats-officedocument.presentationml.presentation
+                - application/vnd.ms-powerpoint
+                - video/mp4
+                - image/jpeg
+                - image/png
+                - image/gif
+                - image/tiff
+                - image/webp
+
+

@@ -1,0 +1,17 @@
+{% extends sonata_block.templates.block_base %}
+{% block block %}
+    {% if list | length %}
+        <h3>{{ block.settings.title }}</h3>
+        <ul>
+            {% for record in list %}
+                <li>
+
+                    <a href="{{ path('sonata_media_download', {'id': record|sonata_urlsafeid }) }}">
+                        {{ record.name }}
+                    </a>
+                    {{ record.description }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

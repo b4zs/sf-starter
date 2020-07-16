@@ -1,0 +1,33 @@
+
+{% macro flashMessages(flashBagContent) %}
+    {% for type, messages in flashBagContent %}
+        {% set catalogue = 'messages' %}
+        {% if type == 'fos_user_success' %}{% set type = 'success' %}{% set catalogue = 'FOSUserBundle' %}{% endif %}
+        {% if type == 'fos_user_warning' %}{% set type = 'warning' %}{% set catalogue = 'FOSUserBundle' %}{% endif %}
+        {% if type == 'fos_user_danger' %}{% set type = 'danger' %}{% set catalogue = 'FOSUserBundle' %}{% endif %}
+        {% if type == 'fos_user_info' %}{% set type = 'info' %}{% set catalogue = 'FOSUserBundle' %}{% endif %}
+
+        {% if type in ['warning', 'success', 'danger', 'info'] %}
+            {% for message in messages %}
+	            <div class="alert alert-dismissible alert-{{ type }}">
+		            <button type="button" class="close" data-dismiss="alert">
+			            <span aria-hidden="true">&times;</span>
+			            <span class="sr-only">{{ 'link.close'|trans }}</span>
+                    </button>
+		            {{ message|trans({}, catalogue)|raw }}
+	            </div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{% import _self as macro %}
+
+
+<div class="flash-messages-container">
+    {# messages from 'messages' variable #}
+    {{ macro.flashMessages(flash_messages | default({})) }}
+
+    {# messages from sesssion #}
+    {{ macro.flashMessages(app.session.flashBag.all()) }}
+</div>

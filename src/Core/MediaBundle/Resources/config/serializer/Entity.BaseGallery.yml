@@ -1,0 +1,10 @@
+Core\MediaBundle\Entity\BaseGallery:
+  properties:
+    primaryMedia:
+      expose: true
+  virtual_properties:
+    getMedia:
+      serialized_name: media
+      expose: true
+      type: array
+

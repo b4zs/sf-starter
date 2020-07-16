@@ -1,0 +1,43 @@
+user_management.login:
+    path:     /login
+    controller: Core\UserBundle\Controller\UserController::login
+
+user_management.register:
+    path:     /register
+    controller: Core\UserBundle\Controller\UserController::register
+
+user_management.register_success:
+    path:     /register-success
+    controller: Core\UserBundle\Controller\UserController::registerSuccess
+
+user_management.register_confirm:
+    path:     /register-confirm
+    controller: Core\UserBundle\Controller\UserController::registerConfirm
+
+user_management.profile:
+    path:     /profile
+    controller: Core\UserBundle\Controller\UserController::profile
+
+user_management.password_change:
+    path:     /password-change
+    controller: Core\UserBundle\Controller\UserController::passwordChange
+
+user_management.recover_password:
+    path:     /recover-password
+    controller: Core\UserBundle\Controller\UserController::recoverPassword
+
+user_management.password_Reset:
+    path:     /password-reset/{token}
+    controller: Core\UserBundle\Controller\UserController::passwordReset
+
+user_management.api.registration:
+    type: rest
+    resource: Core\UserBundle\Controller\RegistrationApiController
+    prefix: /api
+
+
+user_management.api.profile:
+    type: rest
+    resource: Core\UserBundle\Controller\ProfileApiController
+    prefix: /api/user
+    name_prefix: api_user_

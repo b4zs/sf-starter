@@ -1,0 +1,20 @@
+fos_user:
+    db_driver: orm # other valid values are 'mongodb' and 'couchdb'
+    firewall_name: main
+    user_class:     Application\UserBundle\Entity\User
+
+    from_email:
+        address: "%mailer_sender_email%"
+        sender_name: "%mailer_sender_name%"
+    group:
+        group_class:   Application\UserBundle\Entity\Group
+        group_manager: sonata.user.orm.group_manager
+
+    registration:
+        confirmation:
+            enabled:  true
+#            template: ApplicationUserBundle:Registration:email.html.twig
+
+    service:
+        user_manager: sonata.user.orm.user_manager
+        mailer: Core\UserBundle\Mailer\Mailer

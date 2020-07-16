@@ -1,0 +1,25 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+fos_ck_editor:
+    configs:
+        default:
+            #            filebrowserBrowseRoute: admin_application_media_media_browser
+            #            filebrowserImageBrowseRoute: admin_application_media_media_browser
+            #            filebrowserImageBrowseRouteParameters: # Display images by default when clicking the image dialog browse button
+            #                provider: sonata.media.provider.image
+            #            filebrowserUploadRoute: admin_application_media_media_upload
+            #            filebrowserUploadRouteParameters:
+            #                provider: sonata.media.provider.file
+            #            filebrowserImageUploadRoute: admin_application_media_media_upload # Upload file as image when sending a file from the image dialog
+            #            filebrowserImageUploadRouteParameters:
+            #                provider: sonata.media.provider.image
+            #                context: default # Optional, to upload in a custom context
+            bodyClass: 'texts'
+            removePlugins: 'save'
+            allowedContent: true # Turns off EVERY sanitization
+            entities: false
+            basicEntities: false

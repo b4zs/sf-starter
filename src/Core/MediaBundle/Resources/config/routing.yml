@@ -1,0 +1,18 @@
+_core_media_upload:
+    path:     /_upload_handler
+    defaults: { _controller: CoreMediaBundle:FileUploadHandler:upload }
+
+
+sonata_media_view:
+    pattern: /view/{id}/{format}
+    defaults:
+        _controller: SonataMediaBundle:Media:view
+        format: reference
+
+sonata_media_download:
+    pattern: /download/{id}/{format}
+    defaults:
+        _controller: SonataMediaBundle:Media:download
+        format: reference
+    requirements:
+        id: .*

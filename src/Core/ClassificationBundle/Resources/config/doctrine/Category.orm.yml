@@ -1,0 +1,116 @@
+Core\ClassificationBundle\Entity\Category:
+    type:   entity
+    table:  classification__category
+    repositoryClass: Core\ClassificationBundle\Entity\CategoryRepository
+
+    gedmo:
+        tree:
+            type: materializedPath
+
+    id:
+        id:
+            type: integer
+            generator:
+                strategy:   AUTO
+
+
+    fields:
+        name:
+            type:     string
+            column:   name
+            length:   255
+        slug:
+            type:     string
+            length:   255
+            column:   slug
+            nullable: true
+            gedmo:
+                - treePathSource
+
+        description:
+            column:   description
+            type:     text
+            nullable: true
+
+        enabled:
+            type:     boolean
+            default:  false
+            column:   enabled
+        position:
+            type:     integer
+            column:   position
+            nullable: true
+        createdAt:
+            type:     datetime
+            column:   created_at
+            gedmo:
+                timestampable:
+                    on: create
+        updatedAt:
+            type:     datetime
+            column:   updated_at
+            gedmo:
+                timestampable:
+                    on: update
+        path:
+            type:     string
+            length:   255
+            nullable: true
+            unique:   true
+            gedmo:
+                treePath:
+                    separator:           '/'
+                    appendId:            false
+                    startsWithSeparator: true
+                    endsWithSeparator:   false
+        level:
+            type:     integer
+            name:     lvl
+            nullable: true
+            gedmo:
+                -   treeLevel
+        treeLockTime:
+            column:   tree_lock_time
+            type:     date
+            nullable: true
+            gedmo:
+                -   treeLockTime
+        treePathHash:
+            column:   tree_path_hash
+            type:     string
+            nullable: true
+            gedmo:
+                -   treePathHash
+
+    manyToOne:
+        parent:
+            fieldName:      parent
+            targetEntity:   Core\ClassificationBundle\Entity\Category
+            cascade:        [persist]
+            inversedBy:     children
+            joinColumn:
+                name:                 parent_id
+                referencedColumnName: id
+                onDelete:             CASCADE
+            orphanRemoval:  false
+            gedmo:
+                -   treeParent
+        media:
+            fieldName:      media
+            targetEntity:   Sonata\MediaBundle\Model\MediaInterface
+            cascade:        [persist, remove]
+            joinColumn:
+                name:                 media_id
+                referencedColumnName: id
+                onDelete:             CASCADE
+            orphanRemoval:  false
+
+    oneToMany:
+        children:
+            fieldName:      children
+            targetEntity:   Core\ClassificationBundle\Entity\Category
+            cascade:        [persist]
+            mappedBy:       parent
+            orphanRemoval:  false
+            orderBy:
+                position: ASC

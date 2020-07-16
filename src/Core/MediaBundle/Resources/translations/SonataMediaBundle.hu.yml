@@ -1,0 +1,75 @@
+gallery: Galéria
+media: Média
+sonata_media: Média
+no_linked_media: 'Nincs média hozzárendelve'
+link_media: 'Média hozzárendelése'
+label.select_context: 'Feltétel: '
+default: 'Alapértelmezett'
+label.select_provider: 'Típus : '
+link.all_providers: Összes
+sonata.media.provider.dailymotion: DailyMotion
+sonata.media.provider.youtube: YouTube
+sonata.media.provider.image: Kép
+sonata.media.provider.file: Fájl
+sonata.media.provider.vimeo: Vimeo
+list.label_custom: Egyéni
+list.label_enabled: Engedélyezve
+list.label__action: Műveletek
+label.size: Méret
+label.content_type: Fájltípus
+label.tags: Címkék
+filter.label_name: Név
+filter.label_tags: Címkék
+form.label_name: Név
+form.label_enabled: Engedélyezve
+form.label_author_name: Szerző
+form.label_cdn_is_flushable: 'Flush CDN'
+form.label_description: Leírás
+form.label_copyright: Copyright
+form.label_binary_content: Fájl
+form.label_locale: Lokalizáció
+form.label_tags: Címke
+form.label_category: Kategória
+form.label_media_subject: Téma
+form.label_source: Forrás
+form.label_public_date: Dátum
+sidemenu.link_edit_media: Szerkesztés
+sidemenu.link_media_view: Megtekintés
+itle.media_preview: Előnézet
+title.informations: Adatok
+label.width: Szélesség
+label.height: Magasság
+label.copyright: Copyright
+label.author_name: Szerző
+label.cdn: CDN
+label.flushed_at: 'Publikálva'
+label.protected_download_url: 'Védett URL'
+link.test_protected_url: 'URL megnyitása'
+label.protected_download_url_notice: Figyelmeztetés
+description.public_download_strategy: 'A fájl publikusan hozzáférhető.'
+label.public_url: 'Publikus URL'
+title.formats: Formátumok
+breadcrumb.link_media_view: Nézet
+list.label_name: Név
+sonata_category: Kategória
+filter.label_context: Környezet
+filter.label_provider_reference: 'Típus'
+filter.label_enabled: Engedélyezve
+filter.label_provider_name: 'Típus'
+group.file_manager: 'File Manager'
+file_manager: 'File Manager'
+file: 'Fájl'
+admin_label.media: 'Fájlok'
+breadcrumb.link_file_set_list: 'Fileset'
+label.create_new: 'Új fájl'
+label.image_unlink: 'Kép eltávolítása'
+label.add_image: 'Kép hozzáadása'
+'label.reference': 'Eredeti'
+breadcrumb.link_admin_label_media_list: 'Fájlok'
+breadcrumb.link_media_list: 'Fájlok'
+admin_label.gallery: 'Galériák'
+form.label_created_by: 'Létrehozta'
+message.successful_update: 'Sikeres frissítés'
+link.multiupload: 'Multiupload'
+link.save: 'Mentés'
+label.files: 'Fájlok'

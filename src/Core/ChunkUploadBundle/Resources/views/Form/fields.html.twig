@@ -1,0 +1,222 @@
+{% block core_chunk_upload_collection_row_widget %}
+    {{ form_widget(form) }}
+{% endblock %}
+
+{% block chunk_upload_collection_row %}
+    {% set media_data = child.vars.media|default(null) %}
+
+    <li class="chunk_upload_item_row" style="display: inline-block; border-bottom: 1px solid #ddd; padding: 4px; margin-left: 15px; margin-top: 10px;">
+        <a class="pull-right" style="cursor: pointer" onclick="return {{ jsControllerName }}().deleteRow(this)">
+            <span class="glyphicon glyphicon-trash icomoon-close"></span>
+        </a>
+        <a class="chunk_upload_item_label chunk_upload_item_admin_link" style="word-break: break-all;" target="_blank" href="{{ media_data.admin_link|default('#') }}">
+            {{ media_data and media_data.name ? media_data.name : '' }}
+        </a>
+        {{ form_row(child) }}
+    </li>
+{% endblock %}
+
+{% block core_chunk_upload_collection_widget %}
+    {% set containerId = id ~ '_row_container' %}
+    {% set widgetWrapperId = id ~ '_widget' %}
+    {% set jsControllerName = 'window.' ~ id ~ '_chunk_upload_controller' %}
+
+    {% block widget %}
+        <div class="drop-zone form-control" id="{{ widgetWrapperId }}" style="height: auto!important;" v-once>
+            <div class="row">
+                <div class="file-input-controls col-md-6">
+                    <div class="alert alert-danger file-upload-errors" style="display: none;"></div>
+                    <span class="fileinput-button">
+                        <input type="file" id="{{ id }}_file" {{ form.vars.multiple ? 'multiple="multiple"' : '' }}>
+                    </span>
+                </div>
+                <div class="col-md-2">
+                    <span class="progress-bar-counter" style="display: none;">
+                        <span class="current" style="font-weight: 600;">0</span>/<span class="all"></span>
+                    </span>
+                </div>
+                <div class="file-input-progress col-md-4" style="padding-left: 0;">
+                    <div class="progress" style="background-color: #00a65a;display: none;width: 0%;">
+                        <div class="progress-bar progress-bar-success" style="width: 0%;"></div>
+                    </div>
+                </div>
+                {% set child = form.vars.prototype %}
+                <div class="file-input-items">
+                    <ul id="{{ containerId }}" data-prototype="{{ block('chunk_upload_collection_row')|escape }}" class="col-xs-12 media-list">
+                        {% for child in form %}
+                            {{ block('chunk_upload_collection_row') }}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block script %}
+        {% if prototype is defined %}
+            <script type="application/javascript">
+
+                {{ jsControllerName }} = function () {
+
+                    var files = 0;
+
+                    var init = function (inputSelector) {
+
+                        var selector = $(inputSelector);
+                        var fileCount = 0;
+                        var processedMediaIndex = 0;
+                        var wrapperId = "{{ widgetWrapperId }}";
+                        var $wrapper = $('#' + wrapperId);
+                        var $progressBarContainer = $wrapper.find('.progress');
+                        var $progressBar = $progressBarContainer.find('.progress-bar');
+                        var $progressBarCounter = $wrapper.find('.progress-bar-counter');
+                        var $currentFileUploadProcessIndex = $wrapper.find('.progress-bar-counter .current');
+                        var $allFileCounter = $wrapper.find('.progress-bar-counter .all');
+                        var processedMediaIndex = 0;
+
+                        selector.fileupload({
+                            url: '{{ path(form.vars.route_name) }}',
+                            dataType: 'json',
+                            maxChunkSize: {{ form.vars.max_chunk_size }},
+                            formData: {
+                                context: '{{ form.vars.context|e('js') }}',
+                                provider: '{{ form.vars.provider_name|e('js') }}'
+                            },
+                            dropZone: $wrapper.first(),
+                            previewMaxWidth: 100,
+                            previewMaxHeight: 100,
+                            previewCrop: true,
+                            start: function (e) {
+                                showProgressStatus($progressBarContainer, $progressBarCounter);
+                                $allFileCounter.html(fileCount);
+                                var $btn = $(this).closest('.fileinput-button');
+                                disableBtn($btn);
+                                processedMediaIndex = 0;
+                                $currentFileUploadProcessIndex.html(processedMediaIndex + 1);
+                            },
+                            change: function (e, data) {
+                                fileCount = 0;
+                                $.each(data.files, function (index, file) {
+                                    fileCount++;
+                                });
+                            },
+                            always: function (e) {
+                            },
+                            done: function (e, data) {
+                                var fileUploadErrorsBlock = $('.file-upload-errors');
+                                fileUploadErrorsBlock.hide();
+
+                                processedMediaIndex++;
+                                $currentFileUploadProcessIndex.html(processedMediaIndex + 1);
+
+                                var result = data.result;
+
+
+                                if (result.status == '{{ constant('Core\\ChunkUploadBundle\\Service\\ChunkUploader::STATUS_DONE')|e('js') }}') {
+                                    //handle upload success
+                                    var $container = $('#{{ containerId }}');
+                                    var prototype = createPrototype($container, result);
+
+                                    if (!isMultipleFileUpload()) {
+                                        $container.empty();
+                                    }
+
+                                    $container.prepend(prototype);
+
+                                    files++;
+
+                                    // if (files == data.originalFiles.length) {
+                                    //     var $btn = $(this).closest('.fileinput-button');
+                                    //     enableBtn($btn);
+                                    //     files = 0;
+                                    // }
+
+                                    if (processedMediaIndex == fileCount) {
+                                        finishFileUploadProcess($progressBarContainer, $progressBarCounter, $currentFileUploadProcessIndex);
+                                        fileCount = 0;
+                                        processedMediaIndex = 0;
+                                    }
+                                } else if (result.status == '{{ constant('Core\\ChunkUploadBundle\\Service\\ChunkUploader::STATUS_ERROR')|e('js') }}') {
+                                    fileUploadErrorsBlock.html(result.error);
+                                    fileUploadErrorsBlock.show();
+                                }
+                            }
+                        })
+                            .bind('fileuploadprogressall', function (e, data) {
+                                var progress = parseInt(data.loaded / data.total * 100, 10);
+                                $progressBar.css('width', progress + '%').css('background-color', 'green');
+                            })
+                            .bind('fileuploaddrop', function (e, data) {
+                                fileCount = 0;
+                                $.each(data.files, function (index, file) {
+                                    fileCount++;
+                                });
+                            })
+                    };
+
+                    function finishFileUploadProcess(progressBarContainer, progressBarCounter, currentFileUploadProcessIndex) {
+                        hideProgressStatus(progressBarContainer, progressBarCounter);
+                        currentFileUploadProcessIndex.html(0);
+                    }
+
+                    function hideProgressStatus(progressBarContainer, progressBarCounter) {
+                        progressBarCounter.hide();
+                        progressBarContainer.css('width', '0%');
+                        progressBarContainer.css('background-color', '#00a65a').hide();
+                    }
+
+                    function showProgressStatus(progressBarContainer, progressBarCounter) {
+                        progressBarCounter.show();
+                        progressBarContainer.css('width', '100%');
+                        progressBarContainer.css('background-color', '#00a65a').show();
+                    }
+
+                    function createPrototype($container, result) {
+                        var prototype = $container.data('prototype');
+                        prototype = prototype.replace(/__chunk_prototype_name__/g, 'item_' + (new Date()).getTime());
+                        prototype = $(prototype);
+                        prototype.find('input').val(result.media.id);
+                        prototype.find('.chunk_upload_item_icon i').addClass(result.media.icon);
+                        prototype.find('.chunk_upload_item_label').text(result.media.name);
+                        prototype.find('.chunk_upload_item_content_type').text(result.media.content_type);
+                        prototype.find('.chunk_upload_item_thumbnail').attr('src', result.media.thumbnail_url);
+                        prototype.find('.chunk_upload_item_link').attr('href', result.media.link);
+                        prototype.find('.chunk_upload_item_admin_link').attr('href', result.media.admin_link);
+                        return prototype;
+                    }
+
+                    function disableBtn($btn) {
+                        $btn.prop('disabled', true).addClass('disabled');
+                        var $icon = $btn.find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-refresh');
+                    }
+
+                    function enableBtn($btn) {
+                        $btn.prop('disabled', false).removeClass('disabled');
+                        $btn.find('.glyphicon').removeClass('glyphicon-refresh').addClass('glyphicon glyphicon-plus');
+                    }
+
+                    function isMultipleFileUpload() {
+                        return {{ form.vars.multiple ? 'true' : 'false' }};
+                    }
+
+                    var deleteRow = function ($deleteBtn) {
+                        $deleteBtn.closest('.chunk_upload_item_row').remove();
+                        return false;
+                    };
+
+                    return {
+                        init: init,
+                        deleteRow: deleteRow
+                    };
+
+                };
+
+                $(window).on('load', function() {
+                    {{ jsControllerName }}().init('#{{ id }}_file');
+                })
+                {{ jsControllerName }}().init('#{{ id }}_file');
+
+            </script>
+        {% endif %}
+    {% endblock %}
+{% endblock %}

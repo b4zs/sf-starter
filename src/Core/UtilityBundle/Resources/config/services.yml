@@ -1,0 +1,22 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    Core\UtilityBundle\Rest\:
+        resource: '../../Rest/*'
+
+    Core\UtilityBundle\Validator\Constraint\:
+        resource: '../../Validator/Constraint/*Validator*'
+
+
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+#    App\Application\UtilityBundle\Controller\:
+#        resource: '../../Controller'
+#        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

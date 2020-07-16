@@ -1,0 +1,160 @@
+parameters:
+    sonata.media.admin.media.class: Core\MediaBundle\Admin\ORM\MediaAdmin
+    sonata.media.admin.gallery.class: Core\MediaBundle\Admin\ORM\GalleryAdmin
+    sonata.media.admin.media.controller: CoreMediaBundle:MediaAdmin
+    sonata.media.admin.gallery.controller: CoreMediaBundle:GalleryAdmin
+
+    sonata.media.block.gallery.class: Core\MediaBundle\Block\GalleryBlockService
+    sonata.media.block.gallery_list.class: Core\MediaBundle\Block\GalleryListBlockService
+    sonata.media.block.media_lister.class: Core\MediaBundle\Block\MediaListerBlockService
+    sonata.media.block.media.class: Core\MediaBundle\Block\MediaBlockService
+
+
+    sonata.media.manager.gallery.class: Core\MediaBundle\Entity\GalleryManager
+
+    sonata.media.form.type.media_collection.class: Core\MediaBundle\Form\Type\MediaCollectionType
+    sonata.media.form.trasformer.media_collection.class: Core\MediaBundle\Form\DataTransformer\MediaCollectionDataTransformer
+    coop_tilleuls_ck_editor_sonata_media:
+        configuration:
+            templates:
+                layout: SonataAdminBundle::layout_iframe.html.twig
+                browser: CoreMediaBundle:MediaAdmin:browser.html.twig
+                upload: CoreMediaBundle:MediaAdmin:upload.html.twig
+
+
+services:
+    core.media.block.media_lister:
+        class: '%sonata.media.block.media_lister.class%'
+        arguments:
+            - 'Media list'
+            - '@templating'
+        calls:
+            - ['setContainer', ['@service_container']]
+            - ['addTemplate', ['CoreMediaBundle:Block:media_lister_default.html.twig', 'default']]
+        tags:
+            - { name: sonata.block }
+
+    core.media.twig.extension.access:
+        class: Core\MediaBundle\Twig\Extension\MediaAccessExtension
+        arguments:
+            - '@sonata.media.pool'
+            - '@sonata.media.manager.media'
+            - '%sonata.media.thumbnail.format.default%'
+        tags:
+            - { name: twig.extension }
+
+    core_cms.media.twig.extension.media_icon:
+            class: Core\MediaBundle\Twig\Extension\MediaIconExtension
+            tags:
+                - { name: twig.extension }
+            calls:
+                - [setWebDirectory, ['%kernel.root_dir%', '../web/']]
+                - [setLogicalBasePath, ['bundles/coremedia/images/icons/']]
+                - [setContainer, ['@service_container']]
+
+#    sonata.media.admin.gallery:
+#        class: '%sonata.media.admin.gallery.class%'
+#        arguments:
+#            - ~
+#            - '%sonata.media.admin.gallery.entity%'
+#            - '%sonata.media.admin.gallery.controller%'
+#            - '@sonata.media.pool'
+#        calls:
+#            - [setTranslationDomain, ['%sonata.media.admin.gallery.translation_domain%']]
+#            - [setTemplates, [{ list: 'SonataMediaBundle:GalleryAdmin:list.html.twig' }]]
+#        tags:
+#            - { name: sonata.admin, show_in_dashboard: true, manager_type: orm, group: file_manager, label: gallery, label_catalogue: '%sonata.media.admin.gallery.translation_domain%', label_translator_strategy: sonata.admin.label.strategy.underscore }
+
+    core.media.form.type.selector:
+        class: Core\MediaBundle\Form\Type\MediaSelectorType
+        arguments:
+            - '@sonata.media.pool'
+            - '%sonata.media.admin.media.entity%'
+            - '@service_container'
+        tags:
+            - { name: form.type, alias: core_media_selector_type }
+
+
+    core.media.form.trasformer.media_collection:
+        class: '%sonata.media.form.trasformer.media_collection.class%'
+        arguments:
+            - '@sonata.media.manager.media'
+            - '@sonata.media.pool'
+            - '%kernel.debug%'
+
+    core.media.form.type.media_collection:
+        class: '%sonata.media.form.type.media_collection.class%'
+        arguments:
+            - '@sonata.media.pool'
+            - '@core.media.form.trasformer.media_collection'
+        tags:
+            - { name: form.type, alias: core_media_collection_type }
+
+    core.media.form.type.simple_file_upload:
+        class: Core\MediaBundle\Form\Type\MediaSimpleFileUploadFormType
+        calls:
+            - [setPool, ['@sonata.media.pool']]
+        tags:
+            - { name: form.type, alias: core_media_simple_file_upload }
+
+    core.media.form.type.file_input:
+        class: Core\MediaBundle\Form\Type\MediaFileInputType
+        arguments:
+            - '@core.media.form.data_transformer.uploaded_file_media'
+        tags:
+            - { name: form.type, alias: core_media_file_input }
+
+    core.media.form.type.multiple_upload:
+        class: Core\MediaBundle\Form\Type\MediaMultipleUploadType
+        calls:
+            - [setFileToPathModelTransformer, ['@core.media.form.data_transformer.fil_path_media']]
+        tags:
+            - { name: form.type, alias: core_media_multiple_upload_type }
+
+    core.media.form.type.multiple_upload_collection:
+        class: Core\MediaBundle\Form\Type\MediaMultipleUploadCollectionType
+        tags:
+            - { name: form.type, alias: core_media_multiple_upload_collection_type }
+
+    core.media.admin.media.extension.request_parameter_keeper:
+        class: Core\MediaBundle\Admin\BrowserRequestParameterKeeperExtension
+        calls:
+            - [setContainer, ['@service_container']]
+        tags:
+            - { name: sonata.admin.extension, target: sonata.media.admin.media }
+
+
+    sonata.media.resizer.cropping:
+        class: Core\MediaBundle\Resizer\CroppingResizer
+        arguments: ['@sonata.media.adapter.image.gd', !php/const Imagine\Image\ManipulatorInterface::THUMBNAIL_OUTBOUND, '@sonata.media.metadata.proxy']
+
+
+    core.media.form.data_transformer.gallery_has_medias:
+        class: Core\MediaBundle\Form\DataTransformer\GalleryHasMediasDataTransformer
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+
+    core.media.form.data_transformer.fil_path_media:
+        class: Core\MediaBundle\Form\DataTransformer\FilePathToMediaDataTransformer
+        arguments:
+            - '%kernel.cache_dir%'
+
+    core.media.form.data_transformer.uploaded_file_media:
+        class: Core\MediaBundle\Form\DataTransformer\UploadedFileToMediaDataTransformer
+        arguments:
+            - '@sonata.media.pool'
+            - '%kernel.root_dir%'
+
+    coop_tilleuls_ck_editor_sonata_media.media.extension:
+        class: Core\MediaBundle\Admin\Extension\CkeditorMediaBrowserExtension
+        tags:
+            - { name: sonata.admin.extension, target: sonata.media.admin.media }
+
+    core_media.serializer.media_serialization_listener:
+        class: Core\MediaBundle\Serializer\MediaSerializationListener
+        arguments:
+          - '@sonata.media.pool'
+          - '@request_stack'
+          - '%static_domain%'
+        tags:
+            - { name: jms_serializer.event_listener, event: serializer.pre_serialize, method: onPreSerialize, direction: serialization }

@@ -1,0 +1,229 @@
+{% block core_media_selector_type_widget %}
+    {% set callback_name = form.vars.id ~ '_setter_callback' %}
+    {% set tag = tag ? (tag.id ? tag.id : tag.name) : null %}
+
+    {% set url = url(media_browser_route, { tag: tag, filter: { tags: { type: '', value: [tag] } }, context: context, provider: provider, callback: callback_name }) %}
+
+    <div class="clearfix">
+        <div class="pull-left" style="margin-right: 5px" id="{{ form.vars.id }}_thumb">
+            {% if preview == true %}
+                {% if value %}
+                    {% thumbnail value, 'admin' with {'class': 'img-polaroid media-object'} %}
+                {% else %}
+                    <div class="img-polaroid media-object">{{ 'label.no_image' | trans }}</div>
+                {% endif %}
+            {% else %}
+                {% if value %}
+                    <div class="media-name" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;"><a href="{{ path('sonata_media_download', {'id': media|sonata_urlsafeid }) }}" target="_blank">{{ media.name }}</a></div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="pull-left">
+            {{ form_widget(form, { type: 'hidden' }) }}
+            <div class="clearfix"></div>
+            <a href="#" onclick="window.open('{{ url | escape('html_attr') }}', 'cms_image_selector', 'width=800,height=600');" class="btn btn-primary">{{ select_media_label | trans }}</a>
+            <div class="clearfix"></div>
+            {% if allow_delete == true %}
+            <button class="btn btn-danger" style="margi-top: 5px" onclick="unset_{{ form.vars.id }}(); return false;" id="{{ form.vars.id }}_unlink">{{ del_media_label | trans }}</button>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+    <script>
+        function {{ callback_name }}(id, smallSrc, name) {
+            var $mediaDownloadPath = '{{ path('sonata_media_download', {'id': '__ID__' }) }}';
+            $('#{{ form.vars.id }}').val(id);
+            {% if preview == true %}
+                $('#{{ form.vars.id }}_thumb').html('<img src="'+smallSrc+'" class="img-polaroid media-object" />');
+            {% else %}
+            $('#{{ form.vars.id }}_thumb').html('<div class="media-name" style="padding-left: 10px; padding-right: 10px; padding-top: 5px;"><a href="' + $mediaDownloadPath.replace('__ID__', id) + '" target="_blank">' + name + '</a></div>');
+            {% endif %}
+            {{ callback_name }}_update_state();
+        }
+
+        function unset_{{ form.vars.id }}() {
+            $('#{{ form.vars.id }}').val('');
+            {% if preview == true %}
+                $('#{{ form.vars.id }}_thumb').html('<div class="img-polaroid media-object">{{ 'label.no_image' | trans }}</div>')
+            {% else %}
+            $('#{{ form.vars.id }}_thumb').html('<div class="media-name">{{ 'label.no_media' | trans }}</div>')
+            {% endif %}
+            {{ callback_name }}_update_state();
+        }
+
+        function {{ callback_name }}_update_state() {
+            var val = $('#{{ form.vars.id }}').val();
+            if (val) {
+                $('#{{ form.vars.id }}_unlink').show();
+            } else {
+                $('#{{ form.vars.id }}_unlink').hide();
+            }
+        }
+
+        {{ callback_name }}_update_state();
+
+
+    </script>
+{% endblock %}
+
+{% block core_media_multiple_upload_collection_type_widget %}
+    {% if prototype is defined %}
+    {% set js_selector_class = 'js-file-collection-container-'~id %}
+    {%- set attr = attr|merge({'data-prototype': form_row(prototype), class: ''~js_selector_class }) -%}
+    {% endif %}
+
+    <div class="form-group">
+        <div class="controls clearfix">
+            <span class="btn btn-success fileinput-button">
+                <i class="fa fa-plus"></i>
+                <span>&nbsp;{{ 'Select files...'|trans }}</span>
+                <input type="file" id="{{ id }}_file" multiple class="form-control">
+            </span>
+        </div>
+    </div>
+
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        <div class="js-collection-items clearfix">
+            {% for child in form %}
+            {{- form_row(child) -}}
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if prototype is defined %}
+        <script>
+            $('.{{ js_selector_class }} .js-collection-items label').each(function(){
+                var $input = $('#'+$(this).attr('for'));
+                $input.hide();
+                var $removeBtn = $('<button class="btn btn-sm" style="right:0; position:absolute;"><i class="fa fa-times"></i></button>').on('click', function(){ $(this).closest('div').remove() });
+
+                $(this).text($input.val().replace(/.[^_]+_\d_/, '')).removeClass('required').append($removeBtn);
+            });
+
+            var files = 0;
+            $('#{{ form.vars.id }}_file').fileupload({
+                url: '{{ path('_core_media_upload') }}',
+                dataType: 'json',
+                maxChunkSize: {{ form.vars.max_chunk_size }},
+                start: function(e){
+                    $(this).closest('.fileinput-button').find('i').removeClass('fa-plus').addClass('fa fa-refresh fa-spin');
+                    $(this).closest('.fileinput-button').prop('disabled', true).addClass('disabled');
+                },
+                done: function(e, data){
+                    if(data.result.responseCode == 1 && data.result.completedFileName.length > 0 && data.result.canonicalFileName.length > 0) {
+                        var protoTpl = $('.{{ js_selector_class }}').data('prototype');
+                        protoTpl = protoTpl.replace(/__name__/g, 'item_' + (new Date()).getTime());
+                        var $proto = $(protoTpl);
+                        var $target = $('.{{ js_selector_class }} .js-collection-items');
+                        var $removeBtn = $('<button class="btn btn-sm" style="right:0; position:absolute;"><i class="fa fa-times"></i></button>').on('click', function(){ $(this).closest('div').remove() });
+
+                        $proto.find('input').val(data.result.completedFileName).hide();
+                        $proto.find('label').text(data.result.canonicalFileName).removeClass('required').append($removeBtn);
+
+                        $target.append($proto).trigger('init');
+                        files ++;
+                    }
+
+                    if(files == data.originalFiles.length){
+                        $(this).closest('.fileinput-button').find('i').removeClass('fa-refresh fa-spin').addClass('fa-plus');
+                        $(this).closest('.fileinput-button').prop('disabled', false).removeClass('disabled');
+                        files = 0;
+                    }
+                }
+            })
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block core_media_collection_type_widget %}
+    {% set callback_name = form.vars.id ~ '_setter_callback' %}
+
+    {% if tag is null %}
+        {% set tag = '' %}
+    {% else %}
+        {% set tag = tag.id ? tag.id : tag.name %}
+    {% endif %}
+
+    {% set url = url(media_browser_route, { tag: tag, filter: { tags: { type: '', value: [tag] } }, context: context, provider: provider, callback: callback_name }) %}
+    <div class="media-list-container media-list-{{ form.vars.id }}">
+
+        {% if form.vars.allow_add %}
+            <div class="media-list-controls-{{ form.vars.id }}">
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="#" class="btn btn-primary" id="item-select-{{ form.vars.id }}">{{ 'label.add_image' | trans({}, 'SonataMediaBundle') }}</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div id="media-list-{{ form.vars.id }}">
+            {% if value is not empty %}
+                {% for media in value %}
+                    <div class="row" id="{{ form.vars.id }}_row_{{ media }}">
+                        <div class="col-md-6">
+                            <div class="pull-left">
+                                {% thumbnail media, 'thumbnail' with {'class': 'img-polaroid media-object'} %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="clearfix"></div>
+                            <input type="hidden" name="{{ form.vars.full_name }}[]" value="{{ media }}">
+                            <div class="clearfix"></div>
+                            {% if form.vars.allow_delete %}
+                            <a href="javascript: remove_{{ form.vars.id }}({{ media }});" class="btn btn-danger">{{ 'label.image_unlink' | trans({}, 'SonataMediaBundle') }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var {{ form.vars.id }}_prototype = '<div class="row" id="{{ form.vars.id }}_row___MEDIA_ID__">' +
+                '<div class="col-md-6">' +
+                '<div class="pull-left">' +
+                '<img src="__SRC__" width="{{ form.vars.thumb.width }}" height="{{ form.vars.thumb.height }}" />' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-md-6">' +
+                '<div class="clearfix"></div>' +
+                '<input type="hidden" name="{{ form.vars.full_name }}[]" value="__MEDIA_ID__">' +
+                '<div class="clearfix"></div>' +
+                {% if form.vars.allow_delete %}
+                '<a href="javascript: remove_{{ form.vars.id }}(__MEDIA_ID__);" class="btn btn-danger">{{ 'label.image_unlink' | trans({}, 'SonataMediaBundle') }}</a>' +
+                {% endif %}
+                '</div>' +
+                '</div>';
+
+        jQuery(document).ready(function() {
+            jQuery('#item-select-{{ form.vars.id }}').click(function(event){
+                event.preventDefault();
+                openBrowser{{ form.vars.id }}();
+            });
+        });
+
+        function openBrowser{{ form.vars.id }}(){
+            window.open('{{ url | raw }}', 'cms_image_selector', 'width=800,height=600')
+        }
+
+        function {{ callback_name }}(id, smallSrc) {
+            container = jQuery('#media-list-{{ form.vars.id }}');
+
+            content = {{ form.vars.id }}_prototype.replace(/__SRC__/g, smallSrc);
+            content = content.replace(/__MEDIA_ID__/g, id);
+
+            container.prepend(content);
+        }
+
+        function remove_{{ form.vars.id }}(rowid) {
+            row = jQuery('#{{ form.vars.id }}_row_' + rowid);
+            row.remove();
+        }
+    </script>
+{% endblock %}

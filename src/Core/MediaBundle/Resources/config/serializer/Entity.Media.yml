@@ -1,0 +1,7 @@
+Core\MediaBundle\Entity\Media:
+  properties:
+    urls:
+      expose: true
+      type: array
+      groups: ['sonata_api_read']
+

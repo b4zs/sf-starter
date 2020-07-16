@@ -1,0 +1,52 @@
+gallery: Gallery
+media: Media
+sonata_media: Media
+no_linked_media: 'No media assigned'
+link_media: 'Assign media'
+label.select_context: 'Context: '
+label.select_provider: 'Select provider'
+link.all_providers: All providers
+sonata.media.provider.dailymotion: DailyMotion
+sonata.media.provider.youtube: YouTube
+sonata.media.provider.image: Image
+sonata.media.provider.file: file
+sonata.media.provider.vimeo: Vimeo
+list.label_custom: Custom
+list.label_enabled: Enabled
+list.label__action: Actions
+label.size: Size
+label.content_type: File type
+label.tags: Tags
+filter.label_name: Name
+filter.label_tags: Tags
+breadcrumb.link_media_list: Files
+form.label_name: Name
+form.label_enabled: Enabled
+form.label_author_name: Author
+form.label_cdn_is_flushable: 'Flush CDN'
+form.label_description: Description
+form.label_copyright: Copyright
+form.label_binary_content: File
+form.label_locale: Localization
+form.label_tags: Tags
+form.label_category: Category
+form.label_media_subject: Subject
+form.label_source: Source
+form.label_public_date: Date
+form.label_collection: Collection
+form.label_created_by: Creator
+sidemenu.link_edit_media: Edit
+sidemenu.link_media_view: View
+itle.media_preview: Preview
+title.informations: Data
+file_manager: 'File manager'
+file: 'File'
+admin_label.media: 'Files'
+admin_label.gallery: 'Galleries'
+breadcrumb.link_file_set_list: 'Fileset'
+label.create_new: 'Create new'
+label.url_alias: 'Url alias'
+label.image_unlink: 'Remove image'
+label.add_image: 'Add image'
+form.label_primary_media: 'Primary media'
+'label.reference': 'Reference'

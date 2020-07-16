@@ -1,0 +1,4 @@
+user_management.api.registration:
+    type: annotation
+    resource: Core\UtilityBundle\Controller\EchoController
+    prefix: /api

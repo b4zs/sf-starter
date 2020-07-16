@@ -1,0 +1,19 @@
+Core\MediaBundle\Entity\BaseGallery:
+    type: mappedSuperclass
+
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+
+    fields:
+        description:
+            type: text
+            nullable: true
+        deletedAt:
+            type: datetime
+            nullable: true
+
+    manyToOne:
+        primaryMedia:
+            targetEntity: Sonata\MediaBundle\Model\MediaInterface
+            cascade:      [persist]

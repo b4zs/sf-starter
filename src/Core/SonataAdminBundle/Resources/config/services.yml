@@ -1,0 +1,6 @@
+services:
+    Core\SonataAdminBundle\Twig\AdminPoolAccessorExtension:
+        class: Core\SonataAdminBundle\Twig\AdminPoolAccessorExtension
+        arguments: ['@service_container']
+        tags:
+            - { name: twig.extension }

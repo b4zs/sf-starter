@@ -1,0 +1,14 @@
+form.label.default_update: 'Megjegyzés'
+form.label.phone_call: 'Telefonhívás'
+form.label.email: 'E-mail'
+form.label.meeting: 'Megbeszélés'
+
+label.block.header.notes_and_changes: 'Változások és megjegyzések'
+update: 'Frissítés'
+create: 'Létrehozás'
+'phone call': 'Telefonhívás'
+'email': 'E-mail'
+'meeting': 'Megbeszélés'
+
+label.logged_after: Újabbak mint
+label_logged_before: Régebbiek mint

@@ -1,0 +1,4 @@
+
+_media_alias_dynamic:
+    resource: .
+    type: media_alias

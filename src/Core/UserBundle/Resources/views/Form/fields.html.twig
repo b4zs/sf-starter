@@ -1,0 +1,18 @@
+{% extends 'bootstrap_4_layout.html.twig' %}
+
+
+{% block user_password_for_change_authorization_widget %}
+    {% set type = 'password' %}
+    {{ block('form_widget_simple') }}
+
+    {% set containerId = 'sonata-ba-field-container-' ~ form.vars.id %}
+    <script type="text/javascript">
+        $('#{{ form.parent.plainPassword.vars.id }}').on('change keyup', function() {
+            if ($(this).val() || {{ form.parent.plainPassword.vars.errors|length }} || {{ form.vars.errors|length }}) {
+                $('#{{ containerId }}').show();
+            } else {
+                $('#{{ containerId }}').hide();
+            }
+        }).trigger('change');
+    </script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends admin.isCurrentRoute('list') ? get_admin_template('base_list_field', admin.code) : '@SonataAdmin/CRUD/base_show_field.html.twig' %}
+
+{% block field %}
+    {% set route = field_description.options.route.name|default('edit') %}
+
+    {% if object.deletedAt|default(false) %}
+        <strong class="text-gray">{{ value }}</strong>
+    {% else %}
+        <a href="{{ admin.generateUrl(route, {id: object.id}) }}">
+            <strong>{{ value }}</strong>
+        </a>
+    {% endif %}
+{% endblock %}

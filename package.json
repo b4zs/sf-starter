@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "axios": "^0.19.0",
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.4.1",
+    "node-sass": ">=4.14.0",
+    "sass": "^1.22.10",
+    "sass-loader": ">=8.0",
+    "slick-carousel": "^1.8.1",
+    "ts-loader": "^5.4.5",
+    "typescript": "^3.6.3"
+  },
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.30.0",
+    "@babel/plugin-transform-template-literals": "^7.7.4",
+    "@babel/preset-env": "^7.7.6",
+    "core-js": "^3.4.8",
+    "regenerator-runtime": "^0.13.2",
+    "webpack-notifier": "^1.6.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "entry",
+          "corejs": 3
+        }
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-transform-template-literals",
+      "@babel/plugin-transform-literals"
+    ]
+  },
+  "browserslist": [
+    "> .5% in DE",
+    "Firefox ESR",
+    "not dead",
+    "IE 11"
+  ],
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
+  }
+}

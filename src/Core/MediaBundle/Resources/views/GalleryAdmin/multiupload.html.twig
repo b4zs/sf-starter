@@ -1,0 +1,12 @@
+{% extends 'SonataAdminBundle:CRUD:edit.html.twig' %}
+
+
+{% block sonata_admin_content %}
+    {{ block('form') }}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock sonata_admin_content %}
+
+{% block form %}
+{% endblock %}

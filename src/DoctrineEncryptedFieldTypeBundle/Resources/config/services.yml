@@ -1,0 +1,38 @@
+services:
+    DoctrineEncryptedFieldTypeBundle\Encryptor\OpenSslEncryptor:
+        arguments:
+            - '%encrypt_key%'
+        public: true
+    core.encryptor.open_ssl_encryptor: '@DoctrineEncryptedFieldTypeBundle\Encryptor\OpenSslEncryptor'
+
+    DoctrineEncryptedFieldTypeBundle\Encryptor\Hasher:
+        arguments:
+            - '@core.encryptor.open_ssl_encryptor'
+        public: true
+    core.encryptor.hasher: '@DoctrineEncryptedFieldTypeBundle\Encryptor\Hasher'
+
+    DoctrineEncryptedFieldTypeBundle\Encryptor\TimeMarker:
+        arguments:
+            - '@core.encryptor.hasher'
+        public: true
+    core.encryptor.time_marker: '@DoctrineEncryptedFieldTypeBundle\Encryptor\TimeMarker'
+
+    DoctrineEncryptedFieldTypeBundle\Encryptor\RuntimeEncryptor:
+        arguments:
+            - '@core.encryptor.time_marker'
+            - '@translator'
+        public: true
+
+    core.encryptor.runtime: '@DoctrineEncryptedFieldTypeBundle\Encryptor\RuntimeEncryptor'
+
+    DoctrineEncryptedFieldTypeBundle\Command\MigrateCommand:
+        tags:
+            - { name: 'console.command' }
+    core.encryptor.migrate_command: '@DoctrineEncryptedFieldTypeBundle\Command\MigrateCommand'
+
+    DoctrineEncryptedFieldTypeBundle\Service\PseudonymizerService:
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@core.encryptor.hasher'
+
+    core.service.pseudonymizer: '@DoctrineEncryptedFieldTypeBundle\Service\PseudonymizerService'

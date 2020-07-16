@@ -1,0 +1,20 @@
+{
+  "name": "sonata/chunk-upload-bundle",
+  "type": "library",
+  "description": "Form type for multiple media upload",
+  "keywords": ["media", "chunk upload"],
+  "autoload": {
+    "psr-4": {
+      "Core\\ChunkUploadBundle\\": ""
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.assist01.gbart.h3.hu/repo/private/"
+    }
+  ],
+  "require": {
+    "sonata-project/media-bundle": ">=3.0"
+  }
+}

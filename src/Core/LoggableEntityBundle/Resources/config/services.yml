@@ -1,0 +1,78 @@
+parameters:
+  core.loggable_entity.loggable.admin.extension.force_admin_classes: []
+  core.loggable_entity.loggable_listener.class: Core\LoggableEntityBundle\EventListener\LoggableListener
+  core.loggable_entity.loggable.service.class: Core\LoggableEntityBundle\Service\EntityChangeLogService
+  core.loggable_entity.loggable.admin.extension.class: Core\LoggableEntityBundle\Admin\Extension\LoggableEntityExtension
+
+services:
+  core_loggable_entity.admin.loggable_entity:
+    class: Core\LoggableEntityBundle\Admin\LoggableEntityAdmin
+    arguments:
+      - ~
+      - Core\LoggableEntityBundle\Entity\LogEntry
+      - SonataAdminBundle:CRUD
+    calls:
+      - [ setTranslationDomain, [ 'CoreLoggableEntityBundle' ] ]
+    tags:
+      - { name: sonata.admin, manager_type: orm, group: System, label: 'Change log' }
+
+
+  core.loggable_entity.admin.extension.abstract:
+    class: '%core.loggable_entity.loggable.admin.extension.class%'
+    calls:
+      - [setAdmins, ['%core.loggable_entity.loggable.admin.extension.force_admin_classes%']]
+      - [setEntityManager, ['@doctrine.orm.default_entity_manager']]
+      - [setLoggableListener, ['@gedmo.listener.loggable']]
+      - [setTranslator, ['@translator']]
+
+  core.loggable_entity.admin.extension:
+    parent: core.loggable_entity.admin.extension.abstract
+    tags:
+      - { name: sonata.admin.extension, global: true }
+      - { name: kernel.event_listener, event: sonata.block.event.sonata.admin.edit.form.bottom, method: onAdminEditFormBottom }
+
+  core.loggable_entity.block.entity_log:
+    class: Core\LoggableEntityBundle\Block\EntityLogBlockService
+    arguments: ['core.loggable_entity.block.entity_log', '@templating']
+    calls:
+      - [setLoggableService, ['@core.loggable_entity.service']]
+      - [setEntityManager, ['@doctrine.orm.entity_manager']]
+    tags:
+      - { name: sonata.block }
+
+
+  gedmo.listener.loggable:
+    class: '%core.loggable_entity.loggable_listener.class%'
+    calls:
+      - [setService, ['@core.loggable_entity.service']]
+    tags:
+      - { name: doctrine.event_subscriber, connection: default, priority: 0 }
+
+  core.loggable.twig.extension:
+    class: Core\LoggableEntityBundle\Twig\LoggableTwigExtension
+    tags:
+      - { name: twig.extension }
+
+  core.loggable_entity.handler.log_entry:
+    class: Core\LoggableEntityBundle\Handler\LogEntityHandler
+    arguments:
+      - 'Core\LoggableEntityBundle\Entity\LogEntry'
+    tags:
+      - { name: core.loggable_entity.log_class.handler }
+
+  core.loggable_entity.handler.default_gedmo_log_entry:
+    class: Core\LoggableEntityBundle\Handler\LogEntityHandler
+    arguments:
+      - 'Core\LoggableEntityBundle\Entity\LogEntry'
+    tags:
+      - { name: core.loggable_entity.log_class.handler }
+
+  core.loggable_entity.service.abstract:
+    class: '%core.loggable_entity.loggable.service.class%'
+    calls:
+      - [setTokenStorage, ['@security.token_storage']]
+    tags:
+      - { name: core.loggable_entity.service }
+
+  core.loggable_entity.service:
+    parent: core.loggable_entity.service.abstract

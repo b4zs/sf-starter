@@ -1,0 +1,15 @@
+{% block classification_category_widget %}
+    {% set orig_class = attr.class | default('') %}
+    {% set orig_id = id %}
+    {% set id = null %}
+    {% set attr = attr|merge({'class': 'js-classification-category-select', 'data-nodes': choices_serialized | json_encode, id: null}) %}
+    <div class="jstree"  data-prototype="Input_{{ multiple ? 'Multiple' : 'Single' }}"  data-input-id="{{ orig_id }}" {{ block('widget_container_attributes') }}>
+        {% set id = orig_id %}
+        {% set attr = attr|merge({'class': orig_class, 'data-nodes': null }) %}
+        {% if multiple %}
+            {{ block('choice_widget') }}
+        {% else %}
+            <input type="hidden"  value="{{ data ? data.id : null }}" {{ block('widget_attributes') }}/>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+Core\MediaBundle\Entity\BaseMedia:
+    type:   mappedSuperclass
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+
+    fields:
+        deletedAt:
+            type: datetime
+            nullable: true
+
+    manyToMany:
+        tags:
+            targetEntity: Sonata\ClassificationBundle\Model\TagInterface
+            joinTable:
+                name: media__media_tag

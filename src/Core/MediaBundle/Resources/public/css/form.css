@@ -1,0 +1,9 @@
+div.img-polaroid.media-object {
+    min-height: 100px;
+    height: 100px;
+    min-width: 80px;
+    width: 80px;
+    vertical-align: middle;
+    text-align: center;
+    display: table-cell;
+}

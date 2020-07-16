@@ -1,0 +1,12 @@
+Core\ClassificationBundle\Entity\Tag:
+    exclusion_policy: ALL
+    exclude: true
+    properties:
+        enabled:
+          exclude: true
+        media:
+          exclude: true
+        pages:
+          exclude: true
+        contents:
+          exclude: true

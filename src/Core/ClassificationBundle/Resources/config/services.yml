@@ -1,0 +1,83 @@
+parameters:
+  sonata.classification.admin.tag.class: Core\ClassificationBundle\Admin\TagAdmin
+  sonata.classification.admin.collection.class: Core\ClassificationBundle\Admin\CollectionAdmin
+  sonata.classification.admin.category.class: Core\ClassificationBundle\Admin\CategoryAdmin
+  sonata.classification.manager.tag.class: Core\ClassificationBundle\Entity\TagManager
+
+services:
+    Core\ClassificationBundle\DataFixtures\:
+        resource: '../../DataFixtures/'
+        autowire: true
+        autoconfigure: true
+        public: false
+
+
+    core_classification.form.type.category:
+        class: Core\ClassificationBundle\Form\Type\CategoryType
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: form.type, alias: classification_category }
+
+    core_classification.form.type.category_selector:
+        class: Core\ClassificationBundle\Form\Type\CategorySelectorType
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: form.type, alias: classification_category_selector }
+
+    core_classification.twig.text_filter_extension:
+        class: Core\ClassificationBundle\Twig\TextFiltersExtension
+        tags:
+            - { name: twig.extension }
+
+    core_classification.block.helper:
+        class: Core\ClassificationBundle\Block\BlockHelper
+        calls:
+            - [setContainer, ['@service_container']]
+        public: true
+
+
+    sonata.classificaiton.form.type.category_selector:
+        class: Core\ClassificationBundle\Form\Type\SonataCategorySelectorType
+        arguments:
+            - '@sonata.classification.manager.category'
+        tags:
+            - { name: form.type, alias: sonata_category_selector }
+
+
+
+    sonata.classification.admin.collection:
+        class: '%sonata.classification.admin.collection.class%'
+        arguments:
+            - ~
+            - '%sonata.classification.admin.collection.entity%'
+            - '%sonata.classification.admin.collection.controller%'
+            - '@sonata.classification.manager.context'
+        calls:
+            - [setTranslationDomain, ['%sonata.classification.admin.collection.translation_domain%']]
+        tags:
+            - { name: sonata.admin, show_in_dashboard: true, manager_type: orm, group: sonata_classification, label: label_collections, label_catalogue: '%sonata.classification.admin.tag.translation_domain%', label_translator_strategy: sonata.admin.label.strategy.underscore }
+
+    core_classification.block.categories:
+        class: Core\ClassificationBundle\Block\Service\CategoriesBlockService
+        autowire: true
+        bind:
+            $name: 'core_classification.block.categories'
+            $contextManager: '@sonata.classification.manager.context'
+            $categoryManager: '@sonata.classification.manager.category'
+            $categoryAdmin: '@sonata.classification.admin.category'
+        tags:
+            - { name: sonata.block }
+
+    core_classification.block.tags:
+        class: Core\ClassificationBundle\Block\Service\TagsBlockService
+        autowire: true
+        bind:
+            $name: 'core_classification.block.tags'
+            $twig: '@templating.engine.twig'
+            $contextManager: '@sonata.classification.manager.context'
+            $tagManager: '@sonata.classification.manager.tag'
+            $tagAdmin: '@sonata.classification.admin.tag'
+        tags:
+            - { name: sonata.block }

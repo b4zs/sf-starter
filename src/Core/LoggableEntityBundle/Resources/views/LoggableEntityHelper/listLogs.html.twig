@@ -1,0 +1,56 @@
+{% if logEntries|length > 0 %}
+<div class="panel panel-default">
+	<ul class="list-group">
+		{% for index, entry in logEntries %}
+		<li class="list-group-item" style="padding-top: 0px;" id="update-{{ 1+index }}">
+			<div class="row" style="border-bottom: 1px solid #ddd; padding-bottom: 3px; color: #333;background-color: #f5f5f5; border-color: #ddd;">
+				<div class="col-md-4"><a href="#update-{{ entry.version }}">{{ entry.getObjectClass|trans({}, "activity_block") }} #{{ entry.version }}</a> - <small>{{ entry.customAction ? entry.customAction | trans({}, 'CoreLoggableEntityBundle') : entry.action | trans({}, 'CoreLoggableEntityBundle') }}</small></div>
+				<div class="col-md-8 text-right">{{ entry.username }} - {{ entry.loggedAt|localizeddate() }}</div>
+			</div>
+			<div class="row">
+				<div class="col-md-5" title="comment">
+					<p>{{ entry.comment|nl2br }}</p>
+				</div>
+				<div class="col-md-7" title="changeset">
+					<dl class="dl dl-horizontal" style="margin-bottom: 0px!important;">
+						{% for field, value in entry.data %}
+							<dt>{{ (entry.getObjectClass|trans({}, "activity_block")) ~ '.' ~ (field|trans({}, "activity_block")) }}</dt>
+							<dd>
+							{% if is_string(value) %}
+								{{ value|nl2br }}
+							{% elseif value is iterable %}
+								{% for field2, value2 in value %}
+									{% if is_string(value2) %}
+										{{ value2 }}<br>
+									{% else %}
+										{% set transField = (entry.getObjectClass|trans({}, "activity_block")) ~ '.' ~ (field|trans({}, "activity_block")) %}
+										{{ field2 }}:<br>
+										{% for field3, value3 in value2 %}
+											{% if is_string(value3) %}
+												<strong>{{ field3|trans({}, "activity_block") }}:</strong> {{ value3 }}<br>
+											{% else %}
+												{% for field4, value4 in value3 %}
+                                                    {% set field4Trans = field4|trans({}, "activity_block") %}
+                                                    &nbsp;&nbsp;{{ field4Trans }}:<br>
+													{% for field5, value5 in value4 %}
+														{% set field5Trans = field5|trans({}, "activity_block") %}
+														&nbsp;&nbsp;&nbsp;&nbsp;{{ field5Trans }}: {{ value5 }}<br>
+													{% endfor %}
+												{% endfor %}
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+								{% endfor %}
+							{% else %}
+								{{ value|json_encode }}
+							{% endif %}
+							</dd>
+						{% endfor %}
+					</dl>
+				</div>
+			</div>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}

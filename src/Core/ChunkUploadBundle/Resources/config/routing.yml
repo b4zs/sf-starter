@@ -1,0 +1,4 @@
+core_chunk_upload_upload:
+    path:     /upload
+    methods: POST
+    defaults: { _controller: CoreChunkUploadBundle:ChunkUpload:upload }

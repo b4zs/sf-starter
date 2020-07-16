@@ -1,0 +1,19 @@
+{
+    "name": "octet/doctrine-encrypted-field-type-bundle",
+    "description": "SF4 (flex) bundle adding new Doctrine field types for storing AES-256 encrypted data",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "horo",
+            "email": "horvath.robert@gb-art.hu"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+      "psr-4": { "DoctrineEncryptedFieldTypeBundle\\": "" }
+    },
+    "minimum-stability": "dev"
+}

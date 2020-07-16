@@ -1,0 +1,50 @@
+services:
+    core_chunk_upload.chunk_uploader:
+        class: Core\ChunkUploadBundle\Service\ChunkUploader
+        public: true
+        arguments:
+            - '%core_chunk_upload.media_class%'
+            - '@sonata.media.pool'
+
+    core_chunk_upload.manager.media_manager:
+        class: Core\ChunkUploadBundle\Manager\MediaManager
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+
+    core_chunk_upload.media_icon_provider:
+        class: Core\ChunkUploadBundle\Service\MediaIconProvider
+        public: true
+        arguments:
+            - '%core_chunk_upload.extension_css_classes%'
+            - '%core_chunk_upload.extension_default_css_class%'
+
+    core_chunk_upload.form.data_transformer.id_to_entity:
+        class: Core\ChunkUploadBundle\Form\DataTransformer\AsymmetricIdToMediaTransformer
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '%core_chunk_upload.media_class%'
+            - '@core_chunk_upload.builder.media_data_builder'
+
+    core_chunk_upload.form_data_transformer.gallery_has_media_to_media_transformer:
+        public: true
+        class: Core\ChunkUploadBundle\Form\DataTransformer\GalleryHasMediaToMediaTransformer
+
+    core_chunk_upload.builder.media_data_builder:
+        class: Core\ChunkUploadBundle\Builder\MediaDataBuilder
+        public: true
+        arguments:
+            - '@core_chunk_upload.media_icon_provider'
+            - '@sonata.media.pool'
+            - '@sonata.admin.pool'
+
+    Core\ChunkUploadBundle\Form\ChunkUploadCollectionRowType:
+        arguments:
+            - '%core_chunk_upload.media_class%'
+            - '@core_chunk_upload.form.data_transformer.id_to_entity'
+        tags:
+            - { name: form.type, alias: core_chunk_upload_collection_row }
+
+    Core\ChunkUploadBundle\Form\ChunkUploadCollectionType:
+        tags:
+            - { name: form.type, alias: core_chunk_upload_collection }

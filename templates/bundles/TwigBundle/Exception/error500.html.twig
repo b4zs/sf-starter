@@ -1,0 +1,17 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+
+    <section class="error-pages d-flex flex-column align-items-center justify-content-center">
+        <div class="container texts text-center">
+
+            <h1>Internal error</h1>
+
+            <p class="padding-top-default">
+                <a class="btn" href="{{ path('index') }}#guide">Vissza</a>
+            </p>
+
+        </div>
+    </section>
+
+{% endblock %}

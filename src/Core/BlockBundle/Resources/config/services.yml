@@ -1,0 +1,101 @@
+parameters:
+    sonata.block.service.text.class: Core\BlockBundle\Block\Service\TextBlockService
+    sonata.block.service.menu.class: Core\BlockBundle\Block\Service\MenuBlockService
+    sonata.block.service.menu_sitemap.class: Core\BlockBundle\Block\Service\SitemapBlockService
+    sonata.block.hide_services:
+        - sonata.user.block.menu
+        - sonata.user.block.account
+        - sonata.user.block.breadcrumb_index
+        - sonata.user.block.breadcrumb_profile
+#        - sonata.seo.block.email.share_button
+        - sonata.seo.block.facebook.like_box
+        - sonata.seo.block.facebook.like_button
+#        - sonata.seo.block.facebook.send_button
+        - sonata.seo.block.facebook.share_button
+#        - sonata.seo.block.twitter.share_button
+        - sonata.seo.block.twitter.follow_button
+        - sonata.seo.block.twitter.hashtag_button
+        - sonata.seo.block.twitter.mention_button
+#        - sonata.seo.block.twitter.embed
+        - sonata.seo.block.pinterest.pin_button
+#        - sonata.seo.block.breadcrumb.homepage
+        - sonata.admin.block.admin_list
+        - sonata.admin.block.search_result
+        - sonata.block.service.container
+        - sonata.block.service.empty
+#        - sonata.block.service.text
+#        - sonata.block.service.rss
+        - sonata.block.service.menu
+#        - sonata.page.block.container
+        - sonata.page.block.children_pages
+        - sonata.page.block.breadcrumb
+#        - sonata.media.block.media
+        - sonata.media.block.feature_media
+#        - sonata.media.block.gallery
+        - sonata.media.block.breadcrumb_view
+        - sonata.media.block.breadcrumb_index
+        - sonata.media.block.breadcrumb_view_media
+#        - core.media.block.media_lister
+#        - core.page.block.include
+#        - core.cms.contents.block.show
+#        - core.cms.content.block.lister
+services:
+#  core.block.service.menu:
+#      class: '%sonata.block.service.menu.class%'
+#      arguments:
+#          - 'Menu'
+#          - '@templating'
+#          - '@knp_menu.menu_provider'
+#          - '@core.cms.menu.menu_list_provider'
+#      calls:
+#          - [addTemplate, ['CoreMenuBundle:Block:default.html.twig', 'default']]
+#          - [setContainer, ['@service_container']]
+#          - [setAdminFormHelper, ['@sonata.admin.form.helper']]
+#      tags:
+#          - { name: sonata.block }
+
+#  sonata.block.service.menu_sitemap:
+#      class: '%sonata.block.service.menu_sitemap.class%'
+#      arguments:
+#          - 'Sitemap'
+#          - '@templating'
+#          - '@knp_menu.menu_provider'
+#          - '@core.cms.menu.menu_list_provider'
+#      calls:
+#          - [addTemplate, ['CoreMenuBundle:Block:default.html.twig', 'default']]
+#      tags:
+#          - { name: sonata.block }
+
+  sonata.block.manager:
+      class: Core\BlockBundle\Block\BlockServiceManager
+      public: false
+      arguments:
+          - '@service_container'
+          - '%kernel.debug%'
+          - '@logger'
+
+  core.page.block.context_manager:
+      class: Core\BlockBundle\Block\BlockContextManager
+      arguments:
+          - '@sonata.block.loader.chain'
+          - '@sonata.block.manager'
+          - '%sonata_block.cache_blocks%'
+          - '@logger'
+      calls:
+          - [setContainer, ['@service_container']]
+
+  core.block.service.block_service_not_found:
+      class: Core\BlockBundle\Block\Service\BlockServiceNotFoundBlockService
+      arguments:
+          - 'BLOCK SERVICE NOT FOUND'
+          - '@templating'
+
+  sonata.block.service.text:
+    class: '%sonata.block.service.text.class%'
+    arguments:
+      - 'sonata.block.text'
+      - '@templating'
+    calls:
+      - [setContainer, ['@service_container']]
+    tags:
+      - { name: sonata.block }

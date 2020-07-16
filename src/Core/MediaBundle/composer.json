@@ -1,0 +1,12 @@
+{
+  "name": "sonata/media-bundle",
+  "type": "library",
+  "description": "Former media bundle",
+  "keywords": ["media", "image", "video"],
+  "autoload": {
+    "psr-4": { "Core\\MediaBundle\\": "" }
+  },
+  "require": {
+    "sonata-project/media-bundle": ">=3.0 || >2.3.0"
+  }
+}

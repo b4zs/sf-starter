@@ -1,0 +1,82 @@
+parameters:
+    sonata.user.admin.user.class: Core\UserBundle\Admin\UserAdmin
+    sonata.user.admin.group.class: Core\UserBundle\Admin\GroupAdmin
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in bundle root available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    Core\UserBundle\:
+        resource: '../../*'
+        exclude: '../../{DependencyInjection,Entity,Migrations,Tests}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    Core\UserBundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    Core\UserBundle\Controller\RegistrationApiController:
+        arguments:
+            $formFactory: '@fos_user.registration.form.factory'
+
+    Core\UserBundle\Mailer\Mailer:
+        parent: fos_user.mailer.default
+        autowire: false
+        autoconfigure: false
+        public: true
+        calls:
+            - [setContainer, ['@service_container']]
+#            - [setQueueMailer, ['@swiftmailer.mailer.queue']]
+
+    fos_user.listener.email_confirmation:
+        alias: Core\UserBundle\EventListener\EmailConfirmationListener
+
+    Core\UserBundle\EventListener\EmailConfirmationListener:
+        arguments:
+            $mailer: '@fos_user.mailer'
+
+    FOS\UserBundle\Form\Factory\FactoryInterface: '@fos_user.resetting.form.factory'
+
+
+    Core\UserBundle\Security\OwnUserVoter:
+        class: Core\UserBundle\Security\OwnUserVoter
+#        arguments:
+#            - '@application_crm.security.helper'
+        tags:
+            - { name: security.voter }
+
+    sonata.user.editable_role_builder:
+        class: Core\UserBundle\Security\EditableRolesBuilder
+        arguments:
+            - '@security.token_storage'
+            - '@security.authorization_checker'
+            - '@sonata.admin.pool'
+            - '%security.role_hierarchy.roles%'
+
+    sonata.user.admin.user:
+        class: '%sonata.user.admin.user.class%'
+        public: true
+        arguments:
+            - 'sonata.user.admin.user'
+            - '%sonata.user.admin.user.entity%'
+            - '%sonata.user.admin.user.controller%'
+        calls:
+            - [setUserManager, ['@fos_user.user_manager']]
+            - [setTranslationDomain, ['%sonata.user.admin.user.translation_domain%']]
+            - [setTokenStorage, ['@security.token_storage']]
+            - [setAuthorizationChecker, ['@security.authorization_checker']]
+        tags:
+            - { name: 'sonata.admin', manager_type: 'orm', group: '%sonata.user.admin.groupname%', label: 'users', label_catalogue: '%sonata.user.admin.label_catalogue%', label_translator_strategy: 'sonata.admin.label.strategy.underscore', icon: '%sonata.user.admin.groupicon%' }
+
+    core.user.admin_extension.require_own_password_for_password_change:
+        class: Core\UserBundle\Admin\Extension\UserAdminRequireOwnPasswordForPasswordChange
+        tags:
+            - { name: 'sonata.admin.extension', target: sonata.user.admin.user }

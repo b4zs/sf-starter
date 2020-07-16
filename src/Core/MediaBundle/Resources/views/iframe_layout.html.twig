@@ -1,0 +1,22 @@
+{% extends 'SonataAdminBundle::standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .content {
+            margin: 0px;
+            padding: 10px;
+        }
+
+        .content-wrapper {
+            margin-left: 0px!important;
+            padding-top: 0px!important;
+        }
+    </style>
+{% endblock %}
+
+{% block sonata_header %}{% endblock %}
+{% block sonata_left_side %}{% endblock %}
+{% block sonata_nav %}{% endblock %}
+{% block sonata_breadcrumb %}{% endblock %}

@@ -1,0 +1,14 @@
+form.label.default_update: 'Note'
+form.label.phone_call: 'Phone call'
+form.label.email: 'Email'
+form.label.meeting: 'Meeting'
+
+label.block.header.notes_and_changes: 'notes & changes'
+update: 'Update'
+create: 'Create'
+'phone call': 'Phone call'
+'email': 'E-mail'
+'meeting': 'Meeting'
+
+label.logged_after: Newer than
+label.logged_before: Older than

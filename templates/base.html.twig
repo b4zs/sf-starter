@@ -1,12 +1,30 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+<html lang="hu" id="html" class="no-js" {# {{ sonata_seo_html_attributes() }} #} >
+    <head {# {{ sonata_seo_head_attributes() }} #}>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport"
+              content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no">
+        <meta name="format-detection" content="telephone=no">
+        {# {{ sonata_seo_title() }} #}
+        {# {{ sonata_seo_metadatas() }} #}
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block body %}
+            <div class="container">{% block main %}{% endblock %}</div>
+        {% endblock %}
+        {% block javascripts %}
+            <script type="text/javascript">
+                var $htmlClasses = document.getElementById('html');
+                $htmlClasses.className = $htmlClasses.className.replace(/(\s|^)no-js(\s|$)/, ' ').replace(/(\s$)(^\s)/, '');
+            </script>
+            {{ encore_entry_script_tags('app') }}
+            <script> window.jQuery = window.$; </script>
+        {% endblock %}
     </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "name": "sonata/block-bundle",
+  "type": "library",
+  "description": "Former block bundle",
+  "keywords": ["block", "content"],
+  "autoload": {
+    "psr-4": { "Core\\BlockBundle\\": "" }
+  },
+  "require": {
+  }
+}

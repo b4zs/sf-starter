@@ -1,0 +1,8 @@
+Core\ClassificationBundle\Entity\Collection:
+    type: entity
+    table: classification__collection
+    id:
+        id:
+            type: integer
+            generator:
+                strategy:   AUTO

@@ -1,0 +1,28 @@
+"Your password must be at least {{length}} characters long.": "A jelszó legalább {{length}} karakter kell legyen"
+"Your password must include at least one letter.": "A jelszó kell tartalmazzon legalább egy betűt."
+"Your password must include both upper and lower case letters.": "A jelszó kell tartalmazzon kis- és nagybetűt is."
+"Your password must include at least one number.": "A jelszó kell tartalmazzon legalább egy számot"
+"Your password must contain at least one special character.": "A jelszó kell tartalmazzon legalább egy speciális karaktert."
+"password_too_weak": 'Gyenge jelszó. Próbálja meg a következőt: {{ strength_tips }}.'
+"rollerworks_password.strength_level.very_weak": "Nagyon gyenge"
+"rollerworks_password.strength_level.weak": "Gyenge"
+"rollerworks_password.strength_level.medium": "Közepes"
+"rollerworks_password.strength_level.strong": "Erős"
+"rollerworks_password.strength_level.very_strong": "Nagyon erős"
+"rollerworks_password.tip.letters": "adjon hozzá kis- és nagybetűket"
+"rollerworks_password.tip.numbers": "adjon hozz számot"
+"rollerworks_password.tip.lowercase_letters": "adjon hozzá kisbetűt"
+"rollerworks_password.tip.uppercase_letters": "adjon hozzá nagybetűt"
+"rollerworks_password.tip.special_chars": "adjon hozzá speciális karaktert"
+"rollerworks_password.tip.length": "adjon hozzá további karaktereket"
+"Value already in use": "A megadott érték már foglalt."
+"This email address is blocked": A megadott email címmel regisztráció nem engedélyezett
+"This phone number is blocked": A megadott telefonszámmal regisztráció nem engedélyezett
+'Unrecognized VIN': 'Az alvázszámot a rendszer nem ismeri.'
+'The format of the name is not valid': "A név formátuma nem megfelelő"
+'Unrecognized ZIP': 'Hibás irányítószám'
+'The format of the phone number is not valid': 'A telefonszám formátuma nem megfelelő'
+error.change_password_must_be_different: 'Az új jelszó nem lehet a régivel megegyező!'
+'Invalid VIN format': 'Az alvázszámnak 17 karakterből kell állnia.'
+'Invalid value format': 'Nem megfelelő formátum.'
+'This value should not be blank.': 'A mező kitöltése kötelező.'

@@ -1,0 +1,20 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+
+    <section class="error-pages d-flex flex-column align-items-center justify-content-center bg-color-red">
+        <div class="container texts text-center">
+            <div class="error-pages__content">
+
+                <h1 class="huge">404</h1>
+                <h2 class="h5 text-uppercase">Sajnáljuk, a keresett oldal <br> nem található</h2>
+                <img src="{{ asset('build/img/base/searching-person.png') }}" alt="">
+                <p class="padding-top-default">
+                    <a class="btn btn-primary" href="{{ path('index') }}#guide">Vissza a főoldalra</a>
+                </p>
+
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

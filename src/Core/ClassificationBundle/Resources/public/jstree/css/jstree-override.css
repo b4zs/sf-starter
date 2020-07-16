@@ -1,0 +1,30 @@
+/*
+	default bootstrap icon styles conflicts w/ default jstree styles on icon css
+	-> so you need to override both with a namespaced new style
+*/
+
+.jstree-default .jstree-anchor > .nth-icon{
+	/* background-position: 0 -24px; */ 
+	/* background-image: url("../../../sonataadmin/bootstrap/img/glyphicons-halflings.png"); */
+	width: 16px;
+	height: 16px;
+	margin-top:1px;
+}
+
+.jstree .jstree-checkbox {
+/*	background-image: url("40px.png");
+    background-size: 120px 200px;
+    background-position: -40px 0;*/
+}
+
+.jstree a:hover{
+	text-decoration: none;
+}
+
+.jstree-default .jstree-hovered{
+	background-color: rgba(18,168,241,.4);
+}
+
+.jstree-default .jstree-clicked{
+	background-color: rgba(18,168,241,1);
+}

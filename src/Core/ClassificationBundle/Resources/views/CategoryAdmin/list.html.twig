@@ -1,0 +1,65 @@
+{% extends 'SonataAdminBundle:CRUD:list.html.twig' %}
+
+{% block list_table %}
+{% if not app.request.xmlHttpRequest %}
+<div ng-app="treeControlWidget">
+    {% set edit_url = admin.generateUrl('edit', { id: '_ID_' }) %}
+    {% set create_url = admin.generateUrl('create', { parent_id: '_PARENT_ID_' }) %}
+    {% set delete_url = admin.generateUrl('delete', { id: '_ID_' }) %}
+
+    <div data-ng-controller="treeControlWidgetController" data-ng-init="create_url = '{{ create_url | escape('html_attr') }}'; edit_url = '{{ edit_url | escape('html_attr') }}'; delete_url = '{{ delete_url | escape('html_attr') }}'; value = {{ tree_nodes | json_encode | escape('html_attr') }}; init();">
+
+        {% verbatim %}
+    <!-- Nested list template -->
+        <script type="text/ng-template" id="items_renderer.html">
+            <div ng-class="{'angular-ui-tree-node-enabled': item.enabled,  'angular-ui-tree-node-disabled': !item.enabled}">
+                <div ui-tree-handle data-nodrag style="cursor: default;">
+                    <a class="btn btn-default btn-xs btn-disabled" disabled="disabled" data-nodrag title="{% endverbatim %}{{ 'label.expand_collapse' | trans }}{% verbatim %}" data-ng-show="!item.items || item.items.length < 1">
+                        <span class="fa fa-chevron-right"></span>
+                    </a>
+                    <a class="btn btn-default btn-xs" data-nodrag ng-click="toggle(this)" title="{% endverbatim %}{{ 'label.expand_collapse' | trans }}{% verbatim %}" data-ng-show="item.items.length > 0">
+                        <span class="fa" ng-class="{'fa-chevron-right': collapsed, 'fa-chevron-down': !collapsed}"></span>
+                    </a>
+                    <a href="{{ edit_url.replace('_ID_', item.id) }}" class="angular-ui-tree-node-title">{{item.text}}</a>
+
+                    <a href="{{ delete_url.replace('_ID_', item.id) }}" class="pull-right btn btn-default btn-xs" data-nodrag title="{% endverbatim %}{{ 'link_delete' | trans }}{% verbatim %}" data-ng-disabled="{{ item.system }}" >
+                        <span class="fa fa-trash-o"></span>
+                    </a>
+                    <a href="{{ create_url.replace('_PARENT_ID_', item.id) }}" class="pull-right btn btn-default btn-xs" data-nodrag style="margin-right: 8px;" title="{% endverbatim %}{{ 'link_add_child_menu' | trans }}{% verbatim %}">
+                        <span class="fa fa-plus"></span>
+                    </a>
+                    <a href="{{ edit_url.replace('_ID_', item.id) }}" class="pull-right btn btn-default btn-xs" data-ng-show="item.id" data-nodrag style="margin-right: 4px;" title="{% endverbatim %}{{ 'link_edit' | trans }}{% verbatim %}">
+                        <span class="fa fa-pencil"></span>
+                    </a>
+                </div>
+                <ol ui-tree-nodes="options" ng-model="item.items" ng-class="{hidden: collapsed}">
+                    <li ng-repeat="item in item.items | filter:itemFilter" ui-tree-node ng-include="'items_renderer.html'"  data-ng-controller="treeControlWidgetItemController" data-ng-init="init()">
+                    </li>
+                </ol>
+            </div>
+
+        </script>
+
+        <div ui-tree="options">
+            <ol ui-tree-nodes ng-model="list" >
+                <li ng-repeat="item in list | filter:itemFilter" ui-tree-node ng-include="'items_renderer.html'"></li>
+            </ol>
+        </div>
+        <div class="clearfix"></div>
+        {% endverbatim %}
+        <a href="{{ admin.generateUrl('create') }}" class="btn btn-primary btn-xs" data-nodrag style="margin-right: 8px;" title="{{ 'link_add' | trans }}">
+            <span class="fa fa-plus"></span>
+        </a>
+    </div>
+
+
+</div>
+
+<link rel="stylesheet" href="{{ asset('bundles/coreadmin/css/angular-ui-tree.min.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/coreadmin/css/tree.css') }}">
+
+{% else %}
+    {{ parent() }}
+{% endif %}
+{#{{ parent() }}    #}
+{% endblock %}

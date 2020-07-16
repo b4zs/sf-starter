@@ -1,0 +1,7 @@
+sonata_classification:
+    class:
+        category: Core\ClassificationBundle\Entity\Category
+        collection: Core\ClassificationBundle\Entity\Collection
+        context: Core\ClassificationBundle\Entity\Context
+        tag: Core\ClassificationBundle\Entity\Tag
+        media: Application\MediaBundle\Entity\Media

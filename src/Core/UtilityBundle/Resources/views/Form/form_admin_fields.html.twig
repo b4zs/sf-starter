@@ -1,0 +1,23 @@
+{% block sonata_type_choice_field_mask_widget %}
+    {# Taking the form name excluding ending field glue character #}
+    {% set main_form_name = id|slice(0, (id|length - name|length)-1) %}
+    {% if expanded %}
+        {% set js_selector = '#' ~ main_form_name ~ '_' ~ name ~ ' input' %}
+        {% set js_event = 'ifChecked' %}
+    {% else %}
+        {% set js_selector = '#' ~ main_form_name ~ '_' ~ name %}
+        {% set js_event = 'change' %}
+    {% endif %}
+
+
+    {% set class = attr.class|default('') ~ ' choice-field-mask' %}
+    {% set attr = attr|merge({
+        'data-all-fields': all_fields|json_encode,
+        'data-map': map|json_encode,
+        'data-selector': js_selector,
+        'data-main-form-name': main_form_name,
+        'class': class,
+        'v-once': 1,
+    }) %}
+    {{ block('choice_widget') }}
+{% endblock %}
