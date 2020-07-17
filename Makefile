@@ -52,8 +52,8 @@ build:
 	test -f .env
 	composer install --no-scripts
 	@$(CONSOLE) doctrine:database:create --if-not-exists
-	@$(CONSOLE) assets:install --symlink
-	make db_migrate
+	@$(CONSOLE) assets:install  
+	@$(CONSOLE) doctrine:migrations:migrate -n
 	@$(CONSOLE) do:fi:lo --append --group=sonataClassification --group=userAdmin
 	npm i
 	npm run dev
