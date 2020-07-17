@@ -50,7 +50,7 @@ clean:
 
 build:
 	test -f .env
-	composer install --ignore-platform-reqs --no-scripts
+	composer install --no-scripts
 	@$(CONSOLE) doctrine:database:create --if-not-exists
 	@$(CONSOLE) assets:install --symlink
 	make db_migrate
