@@ -1,5 +1,11 @@
+-include .env
+
+ifndef PHP_BINARY
+	PHP_BINARY=php
+endif
+
 ###> symfony/framework-bundle ###
-CONSOLE := $(shell which bin/console)
+CONSOLE := $(PHP_BINARY) $(shell which bin/console)
 sf_console:
 ifndef CONSOLE
 	@printf "Run \033[32mcomposer require cli\033[39m to install the Symfony console.\n"
@@ -42,7 +48,7 @@ serve:
 ###< symfony/framework-bundle ###
 
 cc:
-	make cache:clear
+	make cache-clear
 
 clean:
 	test ! -f .env
@@ -50,11 +56,11 @@ clean:
 
 build:
 	test -f .env
-	composer install --no-scripts
+	$(PHP_BINARY) $(shell which composer) install --no-scripts
 	@$(CONSOLE) doctrine:database:create --if-not-exists
-	@$(CONSOLE) assets:install  
+	@$(CONSOLE) assets:install
 	@$(CONSOLE) doctrine:migrations:migrate -n
-	@$(CONSOLE) do:fi:lo --append --group=sonataClassification --group=userAdmin
+	@$(CONSOLE) do:fi:lo --append --group=sonataClassification --group=userAdmin --group=demo --group=baseData
 	npm i
 	npm run dev
 
@@ -77,7 +83,7 @@ db_reset:
 	@$(CONSOLE) doctrine:database:drop --force
 	@$(CONSOLE) doctrine:database:create --if-not-exists
 	@$(CONSOLE) doctrine:migrations:migrate -n
-	@$(CONSOLE) do:fi:lo --append --group=sonataClassification --group=userAdmin
+	@$(CONSOLE) do:fi:lo --append --group=sonataClassification --group=userAdmin --group=demo --group=baseData
 
 run:
-	@$(CONSOLE) server:run > /dev/null & npm run dev-server
+	@$(CONSOLE) server:run > /dev/null & npm run dev-server --hot

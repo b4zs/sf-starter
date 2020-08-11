@@ -1,0 +1,59 @@
+{% if pageCount > 1 %}
+    <nav>
+        <ul class="pagination">
+            {% if first is defined and current != first %}
+                <li class="page-item">
+                    <a class="page-link arrow--prev" href="{{ path(route, query|merge({(pageParameterName): first})) }}">
+                        &laquo;
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if previous is defined %}
+                <li class="page-item">
+                    <a class="page-link arrow--prev" href="{{ path(route, query|merge({(pageParameterName): previous})) }}">
+                        &lt;
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link arrow--prev disabled">
+                        &lt;
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page in pagesInRange %}
+                <li class="page-link">
+                    {% if page == current %}
+                        <span>{{ page }}</span>
+                    {% else %}
+                        <a class="{{ 'active' }}" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+
+            {% if next is defined %}
+                <li class="page-link">
+                    <a class="arrow--next" href="{{ path(route, query|merge({(pageParameterName): next})) }}">
+                        &gt;
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-link">
+                    <a class="arrow--next disabled">
+                        &gt;
+                    </a>
+                </li>
+            {% endif %}
+
+            {% if last is defined and current != last %}
+                <li class="page-link">
+                    <a class="arrow--next" href="{{ path(route, query|merge({(pageParameterName): last})) }}">
+                        &raquo;
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}

@@ -15,7 +15,12 @@ framework:
     #fragments: true
     php_errors:
         log: true
+        throw: true
 
     templating:
         engines:
             twig
+
+    validation:
+        enabled: true
+        enable_annotations: true

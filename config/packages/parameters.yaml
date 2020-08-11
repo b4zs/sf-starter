@@ -1,12 +1,13 @@
 parameters:
     locale: 'hu'
     locales_available: ['hu']
-    mailer_sender_email: '%env(resolve:MAILER_SENDER_EMAIL)'
-    mailer_sender_name: '%env(resolve:MAILER_SENDER_NAME)'
+    mailer_sender_email: '%env(resolve:MAILER_SENDER_EMAIL)%'
+    mailer_sender_name: '%env(resolve:MAILER_SENDER_NAME)%'
     encrypt_key: '%env(resolve:ENCRYPTION_KEY)%'
     static_domain: '%env(resolve:SITE_DOMAIN)%'
     notification_email: '%env(resolve:NOTIFICATION_EMAIL)%'
     site_domain: '%env(resolve:SITE_DOMAIN)%'
+    frontend_domain: '%env(resolve:SITE_DOMAIN)%'
     google_recaptcha_site_key: '%env(resolve:GOOGLE_RECAPTCHA_SITE_KEY)%'
     google_recaptcha_secret_key: '%env(resolve:GOOGLE_RECAPTCHA_SECRET)%'
     feature_toggles: []

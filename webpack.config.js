@@ -47,8 +47,11 @@ Encore
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
+    // add glob loader
+    .addLoader({ test: /\.scss$/, loader: 'import-glob-loader' })
     // enables Sass/SCSS support
     .enableSassLoader()
+    .enableVueLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()

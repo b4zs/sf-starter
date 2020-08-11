@@ -14,6 +14,18 @@ fos_user:
         confirmation:
             enabled:  true
 #            template: ApplicationUserBundle:Registration:email.html.twig
+    resetting:
+        retry_ttl: 7200 # Value in seconds, logic will use as hours
+        token_ttl: 86400
+        email:
+            from_email:
+                address: '%mailer_sender_email%'
+                sender_name:    '%mailer_sender_name%'
+            template:   '@FOSUser/Resetting/email.txt.twig'
+        form:
+            type:               FOS\UserBundle\Form\Type\ResettingFormType # or 'fos_user_resetting' on Symfony < 2.8
+            name:               fos_user_resetting_form
+            validation_groups:  [ResetPassword, Default]
 
     service:
         user_manager: sonata.user.orm.user_manager

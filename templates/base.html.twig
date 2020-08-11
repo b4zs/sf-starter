@@ -16,7 +16,15 @@
     </head>
     <body>
         {% block body %}
-            <div class="container">{% block main %}{% endblock %}</div>
+            <div class="container">
+                {% if is_granted('ROLE_USER') %}
+                    {{ knp_menu_render('main', { template: 'KnpMenuBundle::menu.html.twig', 'currentAsLink': false }) }}
+                    user: <a href="{{ url('fos_user_profile_edit') }}">{{ app.user.username }}</a> |
+                    <a href="/logout">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
+                {% endif %}
+                {% include 'elements/flash_messages.html.twig' %}
+                {% block main %}{% endblock %}
+            </div>
         {% endblock %}
         {% block javascripts %}
             <script type="text/javascript">

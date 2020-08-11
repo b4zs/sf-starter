@@ -9,6 +9,7 @@ use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class Mailer extends \FOS\UserBundle\Mailer\Mailer
@@ -44,8 +45,7 @@ class Mailer extends \FOS\UserBundle\Mailer\Mailer
     public function sendResettingEmailMessage(UserInterface $user)
     {
         $template = $this->parameters['resetting.template'];
-        $url      = $this->container->getParameter('frontend_domain')
-            . '/password-reset/' . $user->getConfirmationToken();
+        $url = $this->router->generate('fos_user_resetting_reset', array('token' => $user->getConfirmationToken()), UrlGeneratorInterface::ABSOLUTE_URL);
 
         $this->dispatchEvent($user, 'email.reset_password');
         $rendered = $this->renderTemplate($template, array(
